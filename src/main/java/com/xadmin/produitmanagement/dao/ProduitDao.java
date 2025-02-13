@@ -124,6 +124,38 @@ public class ProduitDao {
 	    return produits;
 	}
 	
+	public boolean deleteUser(int id) throws SQLException {
+		boolean rowDeleted;
+		try (Connection connection = getConnection();
+				PreparedStatement statement = connection.prepareStatement(DELETE_PRODUCTS_SQL);) {
+			statement.setInt(1, id);
+			rowDeleted = statement.executeUpdate() > 0;
+		}
+		return rowDeleted;
+	}
+
+	
+	public boolean updateProduit(Produit produit) throws SQLException {
+	    boolean rowUpdated;
+	    try (Connection connection = getConnection();
+	         PreparedStatement statement = connection.prepareStatement(UPDATE_PRODUCTS_SQL)) {
+	        
+	        System.out.println("Mise à jour du produit : " + statement);
+	        
+	        // Mise à jour des valeurs
+	        statement.setString(1, produit.getNomProduit());
+	        statement.setString(2, produit.getDescription());
+	        statement.setInt(3, produit.getQuantite());
+	        statement.setDouble(4, produit.getPrix()); 
+	        statement.setInt(5, produit.getId()); 
+
+	        // Exécution de la mise à jour
+	        rowUpdated = statement.executeUpdate() > 0;
+	    }
+	    return rowUpdated;
+	}
+
+	
 
 	private void printSQLException(SQLException ex) {
 		for (Throwable e : ex) {
