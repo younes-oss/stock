@@ -16,8 +16,8 @@ public class ProduitDao {
 	private String jdbcUsername = "root";
 	private String jdbcPassword = "admin";
 
-	private static final String INSERT_PRODUCTS_SQL = "INSERT INTO product" + " (name, description, quantite) VALUES "
-			+ " (?, ?, ?);";
+	private static final String INSERT_PRODUCTS_SQL = "INSERT INTO product" + " (name, description, quantite,prix,categorie) VALUES "
+			+ " (?, ?, ?, ?, ?);";
 
 	private static final String SELECT_PRODUCT_BY_ID = "select id,name,description,prix,quantite,categorie from product where id =?";
 	private static final String SELECT_ALL_PRODUCTS  = "select * from product";
@@ -41,6 +41,104 @@ public class ProduitDao {
 			e.printStackTrace();
 		}
 		return connection;
+	}
+	
+	public void insertProduit(Produit prod) throws SQLException {
+	    System.out.println(INSERT_PRODUCTS_SQL);
+	    
+	    try (Connection connection = getConnection();
+	         PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PRODUCTS_SQL)) {
+	        
+	       
+	        preparedStatement.setString(1, prod.getNomProduit());
+	        preparedStatement.setString(2, prod.getDescription());
+	        preparedStatement.setDouble(3, prod.getPrix()); 
+	        preparedStatement.setInt(4, prod.getQuantite()); 
+	        preparedStatement.setString(5, prod.getCategorie());
+
+	        System.out.println("Requête SQL exécutée : " + preparedStatement);
+	        
+	        
+	        preparedStatement.executeUpdate();
+
+	    } catch (SQLException e) {
+	        System.err.println("Erreur SQL : " + e.getMessage()); 
+	        printSQLException(e); 
+	    }
+	}
+
+	
+	public Produit selectProduit(int id) {
+	    Produit produit = null;
+	    
+	    try (Connection connection = getConnection();
+	         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PRODUCT_BY_ID);) {
+	        
+	        preparedStatement.setInt(1, id);
+	        System.out.println(preparedStatement);
+	        
+	        ResultSet rs = preparedStatement.executeQuery();
+	        
+	        while (rs.next()) {
+	            String name = rs.getString("name");
+	            String description = rs.getString("description");
+	            int quantite = rs.getInt("quantite");
+	            double prix = rs.getDouble("prix");
+	            String categorie = rs.getString("categorie");
+	            
+	            produit = new Produit(id, name, description, quantite, prix, categorie);
+	        }
+	        
+	    } catch (SQLException e) {
+	        printSQLException(e);
+	    }
+	    
+	    return produit;
+	}
+
+	public List<Produit> selectAllUsers() {
+	    List<Produit> produits = new ArrayList<>();
+	    
+	    try (Connection connection = getConnection();
+	         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_PRODUCTS);) {
+	        
+	        System.out.println(preparedStatement);
+	        
+	        ResultSet rs = preparedStatement.executeQuery();
+	        
+	        while (rs.next()) {
+	            int id = rs.getInt("id");
+	            String name = rs.getString("name");
+	            String description = rs.getString("description");
+	            int quantite = rs.getInt("quantite");
+	            double prix = rs.getDouble("prix");
+	            String categorie = rs.getString("categorie");
+
+	            produits.add(new Produit(id, name, description, quantite, prix, categorie));
+	        }
+	        
+	    } catch (SQLException e) {
+	        printSQLException(e);
+	    }
+	    
+	    return produits;
+	}
+	
+
+	private void printSQLException(SQLException ex) {
+		for (Throwable e : ex) {
+			if (e instanceof SQLException) {
+				e.printStackTrace(System.err);
+				System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+				System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+				System.err.println("Message: " + e.getMessage());
+				Throwable t = ex.getCause();
+				while (t != null) {
+					System.out.println("Cause: " + t);
+					t = t.getCause();
+				}
+			}
+		}
 	}
 	
 	

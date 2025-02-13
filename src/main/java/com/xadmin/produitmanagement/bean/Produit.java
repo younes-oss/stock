@@ -5,7 +5,8 @@ public class Produit {
 	private int id;
 	private String nomProduit;
 	private String description;
-	private int quantite , prix ;
+	private int quantite ;
+	private double prix ;
 	private String categorie;
 	
 	
@@ -15,7 +16,7 @@ public class Produit {
 		this.nomProduit = nomProduit;
 		this.description = description;
 		this.quantite = quantite;
-		this.prix = (int) prix;
+		this.prix =  prix;
 		this.categorie = categorie;
 	}
 	
@@ -54,7 +55,7 @@ public class Produit {
 	public void setQuantite(int quantite) {
 		this.quantite = quantite;
 	}
-	public int getPrix() {
+	public double getPrix() {
 		return prix;
 	}
 	public void setPrix(int prix) {
