@@ -12,9 +12,9 @@ import com.xadmin.produitmanagement.bean.Produit;
 
 public class ProduitDao {
 	
-	private String jdbcURL = "jdbc:mysql://localhost:3306/product?useSSL=false";
-	private String jdbcUsername = "root";
-	private String jdbcPassword = "admin";
+	private static String jdbcURL = "jdbc:mysql://localhost:3306/product?useSSL=false";
+	private static String jdbcUsername = "root";
+	private static String jdbcPassword = "admin";
 
 	private static final String INSERT_PRODUCTS_SQL = "INSERT INTO product" + " (name, description, quantite,prix,categorie) VALUES "
 			+ " (?, ?, ?, ?, ?);";
@@ -28,7 +28,7 @@ public class ProduitDao {
 		
 	}
 
-	protected Connection getConnection() {
+	protected static Connection getConnection() {
 		Connection connection = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -43,7 +43,7 @@ public class ProduitDao {
 		return connection;
 	}
 	
-	public void insertProduit(Produit prod) throws SQLException {
+	public static void insertProduit(Produit prod) throws SQLException {
 	    System.out.println(INSERT_PRODUCTS_SQL);
 	    
 	    try (Connection connection = getConnection();
@@ -68,7 +68,7 @@ public class ProduitDao {
 	}
 
 	
-	public Produit selectProduit(int id) {
+	public static Produit selectProduit(int id) {
 	    Produit produit = null;
 	    
 	    try (Connection connection = getConnection();
@@ -96,7 +96,7 @@ public class ProduitDao {
 	    return produit;
 	}
 
-	public List<Produit> selectAllUsers() {
+	public static List<Produit> selectAllProduits() {
 	    List<Produit> produits = new ArrayList<>();
 	    
 	    try (Connection connection = getConnection();
@@ -124,7 +124,7 @@ public class ProduitDao {
 	    return produits;
 	}
 	
-	public boolean deleteUser(int id) throws SQLException {
+	public static boolean deleteProduit(int id) throws SQLException {
 		boolean rowDeleted;
 		try (Connection connection = getConnection();
 				PreparedStatement statement = connection.prepareStatement(DELETE_PRODUCTS_SQL);) {
@@ -157,7 +157,7 @@ public class ProduitDao {
 
 	
 
-	private void printSQLException(SQLException ex) {
+	private static void printSQLException(SQLException ex) {
 		for (Throwable e : ex) {
 			if (e instanceof SQLException) {
 				e.printStackTrace(System.err);

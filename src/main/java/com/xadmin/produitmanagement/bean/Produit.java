@@ -21,7 +21,7 @@ public class Produit {
 	}
 	
 	
-	public Produit(String nomProduit, String description, int quantite, int prix, String categorie) {
+	public Produit(String nomProduit, String description, int quantite, double prix, String categorie) {
 		super();
 		this.nomProduit = nomProduit;
 		this.description = description;
